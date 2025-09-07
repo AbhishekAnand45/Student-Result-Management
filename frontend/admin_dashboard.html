@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | SRMS</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <div class="container-fluid">
+      <button id="sidebarToggle" class="btn btn-sm btn-success me-2">☰</button>
+      <span class="navbar-brand mb-0 h4" id="site">Admin Dashboard</span>
+      <div class="d-flex align-items-center gap-2">
+        <select id="languageToggle" class="form-select form-select-sm" style="width: auto;">
+          <option value="en">🌐 EN</option>
+          <option value="hi">🌐 HI</option>
+        </select>
+        <button id="themeToggle" class="btn btn-sm btn-outline-secondary">🌓</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar bg-dark text-white p-3">
+    <h4 id="sidebarTitle" class="mb-4">📌 SRMS Admin</h4>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a href="#" id="link-teacher" class="nav-link text-white">👨‍🏫 Teacher Area</a></li>
+      <li class="nav-item"><a href="#" id="link-student" class="nav-link text-white">🎓 Student Area</a></li>
+      <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-white">🔓 Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="card shadow p-4 mx-auto" style="max-width: 1000px;">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 id="headingMain">📊 All Students</h3>
+        <div>
+          <button class="btn btn-success btn-sm me-2" id="downloadCSV">⬇️ Download CSV</button>
+          <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
+            data-bs-target="#addStudentForm" id="addStudentBtn">➕ Add Student</button>
+          <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editStudentModal"
+            id="editStudentBtn">✏️ Edit Student</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th id="nameHeader">Name</th>
+              <th id="rollHeader">Roll No</th>
+              <th id="dobHeader">DOB</th>
+              <th id="mathsHeader">Maths</th>
+              <th id="physicsHeader">Physics</th>
+              <th id="chemistryHeader">Chemistry</th>
+              <th id="englishHeader">English</th>
+              <th id="computerHeader">Computer</th>
+              <th id="totalHeader">Total</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <tr>
+              <td colspan="10" class="text-center">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add Student Form -->
+      <div class="collapse mt-3" id="addStudentForm">
+        <div class="card card-body">
+          <form id="studentForm">
+            <div class="mb-2">
+              <input type="text" id="name" class="form-control" placeholder="Enter Name" required />
+            </div>
+            <div class="mb-2">
+              <input type="text" id="roll" class="form-control" placeholder="Enter Roll Number" required />
+            </div>
+            <div class="mb-2">
+              <input type="date" id="dobInput" class="form-control" required />
+            </div>
+            <!-- Subjects -->
+            <div class="row">
+              <div class="col-md-4 mb-2"><input type="number" id="maths" class="form-control" placeholder="Maths Marks"
+                  required /></div>
+              <div class="col-md-4 mb-2"><input type="number" id="physics" class="form-control"
+                  placeholder="Physics Marks" required /></div>
+              <div class="col-md-4 mb-2"><input type="number" id="chemistry" class="form-control"
+                  placeholder="Chemistry Marks" required /></div>
+              <div class="col-md-6 mb-2"><input type="number" id="english" class="form-control"
+                  placeholder="English Marks" required /></div>
+              <div class="col-md-6 mb-2"><input type="number" id="computer" class="form-control"
+                  placeholder="Computer Marks" required /></div>
+            </div>
+            <button type="submit" class="btn btn-success">Add Student</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit/Delete Student Modal -->
+      <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body">
+              <!-- Compact Edit Panel -->
+              <div id="admin-edit-panel" class="card p-2 shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h6 class="mb-0 fw-semibold">Edit Student</h6>
+                  <small id="edit-status-top"></small>
+                </div>
+
+                <div class="row g-2 mt-2">
+                  <div class="col-6">
+                    <input id="admin-roll-input" class="form-control form-control-sm"
+                      placeholder="Enter Roll No (e.g. 101)">
+                  </div>
+                  <div class="col-6 d-flex gap-2">
+                    <button id="admin-fetch-student" class="btn btn-primary btn-sm w-100">Fetch</button>
+                    <button id="admin-clear-panel" class="btn btn-outline-secondary btn-sm">Clear</button>
+                  </div>
+
+                  <!-- fetched fields -->
+                  <div id="admin-edit-fields" class="col-12 mt-2" style="display:none;">
+                    <label class="form-label small mb-1">Student Name</label>
+                    <input id="admin-edit-name" type="text" class="form-control form-control-sm mb-2"
+                      placeholder="Student name">
+
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <label class="form-label small mb-1">Maths</label>
+                        <input id="admin-edit-maths" type="number" min="0" max="100"
+                          class="form-control form-control-sm">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label small mb-1">Physics</label>
+                        <input id="admin-edit-physics" type="number" min="0" max="100"
+                          class="form-control form-control-sm">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label small mb-1">Chemistry</label>
+                        <input id="admin-edit-chemistry" type="number" min="0" max="100"
+                          class="form-control form-control-sm">
+                      </div>
+                      <div class="col-6">
+                        <label class="form-label small mb-1">English</label>
+                        <input id="admin-edit-english" type="number" min="0" max="100"
+                          class="form-control form-control-sm">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label small mb-1">Computer</label>
+                        <input id="admin-edit-computer" type="number" min="0" max="100"
+                          class="form-control form-control-sm">
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-2">
+                      <button id="admin-update-btn" class="btn btn-success btn-sm">Save</button>
+                      <button id="admin-delete-btn" class="btn btn-danger btn-sm ms-auto">Delete</button>
+                    </div>
+                    <small id="admin-edit-status" class="d-block mt-2"></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
