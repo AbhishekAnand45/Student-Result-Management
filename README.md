@@ -17,4 +17,4 @@ A full-stack web application to manage student results with separate **Admin**, 
 ## 🛠️ Setup Instructions
 1. Clone this repo:
    ```bash
-   git clone https://github.com/AbhishekAnand45/student-result-management.git
+   git clone https://github.com/AbhishekAnand45/Student-Result-Management.git
